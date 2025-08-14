@@ -4,6 +4,7 @@
 # Usage:
 #   ./build.sh -a                # Compile all .c files in all folders
 #   ./build.sh -d <folder_name>  # Compile only in a specific folder
+#   ./build.sh -r		 # Remove previous build/
 
 OUTPUT_DIR="build"
 mkdir -p "$OUTPUT_DIR"
@@ -12,12 +13,13 @@ MAX_JOBS=$(nproc 2>/dev/null || echo 4)  # Use number of CPU cores, default 4
 job_count=0
 
 compile_file() {
-    local file="$1"
-    local filename
-    filename=$(basename "$file" .c)
+    local file="${1#./}"
+    local directory="$OUTPUT_DIR/$(dirname "$file")"
+    local filename=$directory/$(basename "$file" .c)
+    mkdir -p $directory; 
 
-    if gcc "$file" -o "$OUTPUT_DIR/$filename"; then
-        echo "✅ Compiled $file → $OUTPUT_DIR/$filename"
+    if gcc "$file" -o "$filename"; then
+        echo "✅ Compiled $file → $filename"
     else
         echo "❌ Compilation failed for $file"
         exit 1
@@ -53,10 +55,12 @@ elif [[ "$1" == "-d" && -n "$2" ]]; then
         echo "❌ Folder '$2' not found."
         exit 1
     fi
-
+elif [[ "$1" == "-r" ]]; then
+    rm -r build
 else
     echo "Usage:"
     echo "  $0 -a                Compile all .c files in all folders"
     echo "  $0 -d <folder_name>  Compile only in a specific folder"
+    echo "  $0 -r		 Remove previous build/"
     exit 1
 fi
