@@ -4,7 +4,8 @@
 # Usage:
 #   ./build.sh -a                # Compile all .c files in all folders
 #   ./build.sh -d <folder_name>  # Compile only in a specific folder
-#   ./build.sh -r		 # Remove previous build/
+#   ./build.sh -f <file_name>	 # Compile only in a specific file
+#   ./build.sh -r		         # Remove previous build/
 
 OUTPUT_DIR="build"
 mkdir -p "$OUTPUT_DIR"
