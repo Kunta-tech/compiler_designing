@@ -101,14 +101,14 @@ int eval(int postfix[]) {
 		    default:
 			printf("not an operation: %c\n",ch);
 		}
-		printf("%c -> %d\n", ch, res);
+		// printf("%c -> %d\n", ch, res);
 	        push(res);
 	    }
 	}
 	else{
 	    push(postfix[i]);
 	}
-	look();
+	// look();
     }
     return pop();
 }
