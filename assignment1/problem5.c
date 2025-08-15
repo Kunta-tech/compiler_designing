@@ -3,17 +3,22 @@
 #include <string.h>
 
 #define MAX 100
-char stack[MAX];
+int stack[MAX];
 int top = -1;
 
-void push(char c) {
+void push(int c) {
     stack[++top] = c;
 }
-char pop() {
+int pop() {
     return stack[top--];
 }
-char peek() {
+int peek() {
     return stack[top];
+}
+void look() {
+    for(int i=0;i<=top;i++)
+	printf("%d ",stack[i]);
+    printf("\n");
 }
 
 int precedence(char op) {
@@ -36,17 +41,24 @@ void infixToPostfix(char infix[], int postfix[]) {
     for (i = 0; infix[i] != '\0'; i++) {
         c = infix[i];
         if (isdigit(c)) {
-            if(fd==0) {
+            if(!fd) {
                 fd = 1;
                 postfix[k] = 0;
             }
-            postfix[k] = postfix[k]*10 + c;
+            postfix[k] = postfix[k]*10 + (c-'0');
         }
-        else {
+        else if(fd) {
             fd = 0;
             k++;
         }
-        if (c == '(') {
+        if (isOperator(c)) {
+            while (top != -1 && precedence(peek()) >= precedence(c)) {
+                postfix[k++] = -pop();
+            }
+            push(c);
+        }
+	/* You can use this if you want to flex	
+        else if (c == '(') {
             push(c);
         }
         else if (c == ')') {
@@ -55,27 +67,50 @@ void infixToPostfix(char infix[], int postfix[]) {
             }
             pop();
         }
-        else if (isOperator(c)) {
-            while (top != -1 && precedence(peek()) >= precedence(c)) {
-                postfix[k++] = -pop();
-            }
-            push(c);
-        }
+	*/
     }
+    if(fd=1) k++;
 
     while (top != -1) {
         postfix[k++] = -pop();
     }
-    postfix[k] = -('\0');
+    postfix[k] = -('\n');
 }
 int eval(int postfix[]) {
-    int res = 0;
     char ch;
-    for(int i=0;i<MAX;i++){
-        printf((postfix[i]>=0)?"%d ":"%c ",(postfix[i]>=0)?postfix[i]:(char)(-postfix[i]));
+    for(int i=0,j=0;i<MAX;i++){
+	if(postfix[i]<0){
+	    ch = (char)(-postfix[i]);
+	    if(ch == '\n') break;
+	    if(top>=1){
+		int res=0;
+		int b=pop(), a=pop();
+		switch(ch){
+		    case '+':
+		        res=a+b;
+			break;
+		    case '-':
+		        res=a-b;
+			break;
+		    case '*':
+		        res=a*b;
+			break;
+		    case '/':
+		        res=a/b;
+			break;
+		    default:
+			printf("not an operation: %c\n",ch);
+		}
+		printf("%c -> %d\n", ch, res);
+	        push(res);
+	    }
+	}
+	else{
+	    push(postfix[i]);
+	}
+	look();
     }
-    printf("\n");
-    return res;
+    return pop();
 }
 
 int main() {
@@ -85,7 +120,7 @@ int main() {
     printf("Enter infix expression: ");
     scanf("%s", infix);
     infixToPostfix(infix, postfix);
-    printf("Postfix expression: %s\n", postfix);
+    printf("Result: %d\n", eval(postfix));
 
     return 0;
 }

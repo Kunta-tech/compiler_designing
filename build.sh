@@ -55,12 +55,21 @@ elif [[ "$1" == "-d" && -n "$2" ]]; then
         echo "❌ Folder '$2' not found."
         exit 1
     fi
+elif [[ "$1" == "-f" && -n "$2" ]]; then
+    if [[ -f "$2" ]]; then
+	echo "📂 Compiling file: $2"
+	run_with_fork "$2"
+    else
+	echo "❌ couldn't compile: $2"
+	exit 1
+    fi
 elif [[ "$1" == "-r" ]]; then
     rm -r build
 else
     echo "Usage:"
     echo "  $0 -a                Compile all .c files in all folders"
     echo "  $0 -d <folder_name>  Compile only in a specific folder"
+    echo "  $0 -f <file_name>	 Compile only in a specific file"
     echo "  $0 -r		 Remove previous build/"
     exit 1
 fi
