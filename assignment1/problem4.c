@@ -34,7 +34,7 @@ void infixToPostfix(char infix[], char postfix[]) {
     int i, k = 0;
     char c;
 
-    for (i = 0; infix[i] != '\0'; i++) {
+    for (i = 0; infix[i] != '\n'; i++) {
         c = infix[i];
         if (isalpha(c)) {
             postfix[k++] = c;
@@ -66,7 +66,7 @@ int main() {
     char infix[MAX], postfix[MAX];
 
     printf("Enter infix expression: ");
-    scanf("%s", infix);
+    fgets(infix, sizeof(infix), stdin);
     infixToPostfix(infix, postfix);
     printf("Postfix expression: %s\n", postfix);
 
