@@ -66,7 +66,7 @@ int main() {
     char infix[MAX], postfix[MAX];
 
     printf("Enter infix expression: ");
-    scanf("%s", infix);
+    fgets(infix, sizeof(infix), stdin);
     infixToPostfix(infix, postfix);
     printf("Postfix expression: %s\n", postfix);
 
