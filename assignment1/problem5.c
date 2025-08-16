@@ -15,11 +15,13 @@ int pop() {
 int peek() {
     return stack[top];
 }
+/*
 void look() {
     for(int i=0;i<=top;i++)
 	printf("%d ",stack[i]);
     printf("\n");
 }
+*/
 
 int precedence(char op) {
     switch (op) {
@@ -69,7 +71,7 @@ void infixToPostfix(char infix[], int postfix[]) {
         }
 	*/
     }
-    if(fd=1) k++;
+    if(fd) k++;
 
     while (top != -1) {
         postfix[k++] = -pop();
