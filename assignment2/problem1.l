@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 
 int char_count = 0;
 int word_count = 0;
@@ -41,16 +42,19 @@ int is_keyword(char *word) {
 
 %%
 
-int main(int argc, char *argv[]) {
-    if (argc > 1) {
-        FILE *file = fopen(argv[1], "r");
-        if (!file) {
-            printf("Could not open %s\n", argv[1]);
-            return 1;
-        }
-        yyin = file;
+int main() {
+    FILE *file;
+    char buffer[100];
+    printf("Enter a c file: ");
+    scanf("%s", buffer);
+    file = fopen(buffer, "r");
+    if(!file){
+        printf("Could not open %s\n", buffer);
+        return 1;
     }
+    yyin = file;
     yylex();
+    fclose(file);
 
     printf("Characters: %d\n", char_count);
     printf("Words: %d\n", word_count);
