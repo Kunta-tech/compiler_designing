@@ -1,6 +1,7 @@
 %{
 #include <stdio.h>
-#include<string.h>
+#include <string.h>
+#include <ctype.h>
 int isExpr = 1, isOpt=-1;
 char iden[20][20], ops[20];
 int idenT=-1,opsT=-1;
@@ -27,7 +28,7 @@ int isIdentifier(char *s) {
 .|\n   ;
 %%
 
-int main{
+int main(){
   yylex();
   if(isExpr){
     printf("Valid Expression\n");
