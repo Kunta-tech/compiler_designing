@@ -1,28 +1,19 @@
 %{
 #include <stdio.h>
-
-int vowel_count = 0;
-int consonant_count = 0;
+int vow = 0, con = 0;
 %}
-
 %%
-
-[aeiouAEIOU]      { vowel_count++; }
-[a-zA-Z]          { consonant_count++; }
-.|\n              { /* ignore anything else */ }
-
+[aeiouAEIOU]      { vow++; }
+[a-zA-Z]          { con++; }
+.|\n              {}
 %%
-
 int main() {
     printf("Enter a string: ");
-    yylex();   // process input
-
+    yylex();
     printf("Vowels: %d\n", vowel_count);
     printf("Consonants: %d\n", consonant_count);
-
     return 0;
 }
-
 int yywrap() {
     return 1;
 }

@@ -1,12 +1,11 @@
 %{
 #include <stdio.h>
 char buffer[100];
-int comment_s = 0, comment_m = 0;
 %}
 
 %%
-"//".*"\n"                { comment_s++; fputc('\n', target); }   // single line comment
-"/*"([^*]|\*+[^/])*\*+"/" { comment_m++; }                        // multi  line comment
+"printf"  { fprintf(yyout, "writef"); }
+"scanf"   { fprintf(yyout, "readf");  }
 .|\n                      { fputc(yytext[0], target); }           // everything else
 %%
 
