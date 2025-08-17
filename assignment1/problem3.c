@@ -1,5 +1,4 @@
 #include <stdio.h>
-#include <stdlib.h>
 
 void removeComments(FILE *src, FILE *dest) {
     char ch, next;
