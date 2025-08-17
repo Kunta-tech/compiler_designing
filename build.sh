@@ -16,15 +16,36 @@ job_count=0
 compile_file() {
     local file="${1#./}"
     local directory="$OUTPUT_DIR/$(dirname "$file")"
-    local filename=$directory/$(basename "$file" .c)
-    mkdir -p $directory; 
+    local filename="$directory/$(basename "$file" .${file##*.})"
 
-    if gcc "$file" -o "$filename"; then
-        echo "✅ Compiled $file → $filename"
-    else
-        echo "❌ Compilation failed for $file"
-        exit 1
-    fi
+    mkdir -p "$directory"
+
+    case "$file" in
+        *.c)
+            if gcc "$file" -o "$filename"; then
+                echo "✅ Compiled $file → $filename"
+            else
+                echo "❌ Compilation failed for $file"
+                exit 1
+            fi
+            ;;
+        *.l)
+            local cfile="$directory/$(basename "$file" .l).c"
+            # Run lex to generate C file
+            if lex -o "$cfile" "$file"; then
+                echo "🌀 Lex generated $cfile"
+                if gcc "$cfile" -ll -o "$filename"; then
+                    echo "✅ Compiled $file → $filename"
+                else
+                    echo "❌ Compilation failed for $file"
+                    exit 1
+                fi
+            else
+                echo "❌ Lex failed for $file"
+                exit 1
+            fi
+            ;;
+    esac
 }
 
 run_with_fork() {
@@ -34,23 +55,23 @@ run_with_fork() {
 
         # Limit concurrent jobs
         if (( job_count >= MAX_JOBS )); then
-            wait -n  # wait for any job to finish before starting a new one
+            wait -n
             ((job_count--))
         fi
     done
 
-    wait  # wait for all jobs to finish
+    wait
 }
 
 if [[ "$1" == "-a" ]]; then
     echo "🔍 Searching for all .c files..."
-    mapfile -t files < <(find . -type f -name "*.c")
+    mapfile -t files < <(find . -type f)
     run_with_fork "${files[@]}"
 
 elif [[ "$1" == "-d" && -n "$2" ]]; then
     if [[ -d "$2" ]]; then
         echo "📂 Compiling files in folder: $2"
-        mapfile -t files < <(find "$2" -type f -name "*.c")
+        mapfile -t files < <(find "$2" -type f)
         run_with_fork "${files[@]}"
     else
         echo "❌ Folder '$2' not found."
