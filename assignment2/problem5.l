@@ -1,11 +1,12 @@
 %{
 #include <stdio.h>
 char buffer[100];
+int pf=0,sf=0;
 %}
 
 %%
-"printf"  { fprintf(yyout, "writef"); }
-"scanf"   { fprintf(yyout, "readf");  }
+"printf"  { fprintf(yyout, "writef");pf++; }
+"scanf"   { fprintf(yyout, "readf");sf++;  }
 .|\n	{ fputc(yytext[0], yyout); }
 %%
 
@@ -31,6 +32,8 @@ int main(){
   yylex();
   fclose(source);
   fclose(target);
+  printf("No. of 'printf's: %d\n", pf);
+  printf("No. of 'scanf's: %d\n", sf);
 
   return 0;
 }

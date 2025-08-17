@@ -32,6 +32,8 @@ int main(){
   yylex();
   fclose(source);
   fclose(target);
+  printf("No. of single line comments: %d\n", comment_s);
+  printf("No. of multi line comments: %d\n", comment_m);
 
   return 0;
 }
