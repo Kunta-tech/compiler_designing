@@ -5,9 +5,9 @@ int comment_s = 0, comment_m = 0;
 %}
 
 %%
-"//".*"\n"                { comment_s++; fputc('\n', target); }   // single line comment
+"//".*"\n"                { comment_s++; fputc('\n', yyout); }   // single line comment
 "/*"([^*]|\*+[^/])*\*+"/" { comment_m++; }                        // multi  line comment
-.|\n                      { fputc(yytext[0], target); }           // everything else
+.|\n                      { fputc(yytext[0], yyout); }           // everything else
 %%
 
 int main(){

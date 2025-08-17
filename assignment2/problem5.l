@@ -6,7 +6,7 @@ char buffer[100];
 %%
 "printf"  { fprintf(yyout, "writef"); }
 "scanf"   { fprintf(yyout, "readf");  }
-.|\n                      { fputc(yytext[0], target); }           // everything else
+.|\n	{ fputc(yytext[0], yyout); }
 %%
 
 int main(){
