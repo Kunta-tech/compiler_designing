@@ -7,11 +7,9 @@ int num = 0;         // Temporary number
 char op = '+';       // Current operator (default +)
 %}
 
-DIGIT   [0-9]+
-
 %%
 
-{DIGIT}     {
+[0-9]+      {
                 num = atoi(yytext);   // convert token to integer
 
                 switch(op) {
